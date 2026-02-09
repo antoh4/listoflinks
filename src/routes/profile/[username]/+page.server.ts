@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db";
-import { list, user } from "$lib/server/db/schema";
+import { list, user, link } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 import { error, redirect } from "@sveltejs/kit";
 
@@ -47,5 +47,32 @@ export const actions = {
 
         // Redirect to the same page to show the new list
         redirect(303, request.url);
+    },
+
+    createLink: async ({ request, locals }) => {
+        if (!locals.user) {
+            error(401, "Unauthorized");
+        }
+
+        const data = await request.formData();
+        const title = data.get("title");
+        const url = data.get("url");
+        const listId = data.get("listId");
+
+        if (!title || typeof title !== "string" || !url || typeof url !== "string" || !listId || typeof listId !== "string") {
+            error(400, "Title, URL, and List ID are required");
+        }
+
+        // TODO: Add validation to ensure the listId belongs to the user.
+        // For now, we'll proceed with the insertion.
+
+        await db.insert(link).values({
+            title,
+            url,
+            listId,
+        });
+
+        // No need to redirect, SvelteKit will invalidate the data and update the page
+        // redirect(303, request.url);
     },
 };

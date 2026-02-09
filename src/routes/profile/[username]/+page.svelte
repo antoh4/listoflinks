@@ -47,6 +47,34 @@
                 {:else}
                     <p>No links in this list.</p>
                 {/if}
+
+                {#if sessionUser && sessionUser.id === profileUser.id}
+                    <form method="POST" action="?/createLink" class="mt-4">
+                        <input type="hidden" name="listId" value={list.id} />
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
+                            <input
+                                type="text"
+                                name="title"
+                                placeholder="Link Title"
+                                class="p-2 border border-gray-300 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                            <input
+                                type="url"
+                                name="url"
+                                placeholder="Link URL (e.g., https://example.com)"
+                                class="p-2 border border-gray-300 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                            <button
+                                type="submit"
+                                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                            >
+                                Add Link
+                            </button>
+                        </div>
+                    </form>
+                {/if}
             </div>
         {/each}
     {:else}
