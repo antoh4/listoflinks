@@ -8,23 +8,23 @@
     let newListTitle = '';
 </script>
 
-<div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">{profileUser.name}"s Profile</h1>
+<div>
+    <h1>{profileUser.name}"s Profile</h1>
 
     {#if sessionUser && sessionUser.id === profileUser.id}
-        <div class="mb-6 p-4 bg-gray-100 rounded-lg shadow">
-            <h2 class="text-2xl font-semibold mb-3">Create New List</h2>
-            <form method="POST" action="?/createList" class="flex flex-col space-y-3">
+        <div>
+            <h2>Create New List</h2>
+            <form method="POST" action="?/createList">
                 <input
                     type="text"
                     name="title"
                     placeholder="List Title"
                     bind:value={newListTitle}
-                    class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   
                 />
                 <button
                     type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                   
                 >
                     Create List
                 </button>
@@ -32,15 +32,15 @@
         </div>
     {/if}
 
-    <h2 class="text-2xl font-semibold mb-4">Lists</h2>
+    <h2>Lists</h2>
     {#if profileUser.lists && profileUser.lists.length > 0}
         {#each profileUser.lists as list}
-            <div class="bg-white shadow rounded-lg p-4 mb-4">
-                <h3 class="text-xl font-bold mb-2">{list.title}</h3>
+            <div>
+                <h3>{list.title}</h3>
                 {#if list.links && list.links.length > 0}
-                    <ul class="list-disc pl-5">
+                    <ul>
                         {#each list.links as link}
-                            <li><a href={link.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">{link.title} ({link.year ? link.year + ", " : ""}{link.url})</a></li>
+                            <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title} ({link.year ? link.year + ", " : ""}{link.url})</a></li>
                         {/each}
                     </ul>
                 {:else}
@@ -48,34 +48,34 @@
                 {/if}
 
                 {#if sessionUser && sessionUser.id === profileUser.id}
-                    <form method="POST" action="?/createLink" class="mt-4">
+                    <form method="POST" action="?/createLink">
                         <input type="hidden" name="listId" value={list.id} />
-                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
+                        <div>
                             <input
                                 type="text"
                                 name="title"
                                 placeholder="Link Title"
-                                class="p-2 border border-gray-300 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               
                                 required
                             />
                             <input
                                 type="url"
                                 name="url"
                                 placeholder="Link URL (e.g., https://example.com)"
-                                class="p-2 border border-gray-300 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               
                                 required
                             />
                             <input
                                 type="number"
                                 name="year"
                                 placeholder="Year (optional)"
-                                class="p-2 border border-gray-300 rounded-md w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               
                                 min="1900"
                                 max="2100"
                             />
                             <button
                                 type="submit"
-                                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                               
                             >
                                 Add Link
                             </button>
