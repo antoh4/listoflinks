@@ -23,4 +23,11 @@
   <a href="/login">Log in / register</a>
 {/if}
 
-
+<h2>Users</h2>
+<ul>
+  {#each data.users as user}
+    <li>
+      <a href="/profile/{user.name}">{user.name}</a>
+    </li>
+  {/each}
+</ul>
