@@ -5,7 +5,9 @@
 
     const { profileUser, sessionUser } = data;
 
-    let newListTitle = '';
+    let newListTitle = 
+''
+;
 </script>
 
 <div class="container mx-auto p-4">
@@ -25,7 +27,6 @@
                 <button
                     type="submit"
                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out"
-                    on:click={() => (newListTitle = '')}
                 >
                     Create List
                 </button>
