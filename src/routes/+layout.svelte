@@ -8,4 +8,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
+<a href="/"><h1>Listoflinks</h1></a>
+<p>Social media made of lists of links</p>
+
 {@render children()}
