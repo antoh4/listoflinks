@@ -37,4 +37,9 @@ export const linkRelations = relations(link, ({ one }) => ({
     }),
 }));
 
+// Add userRelations to schema.ts to define the relationship with lists
+export const userRelations = relations(user, ({ many }) => ({
+    lists: many(list),
+}));
+
 export *  from './auth.schema';
