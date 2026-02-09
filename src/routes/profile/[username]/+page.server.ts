@@ -58,6 +58,7 @@ export const actions = {
         const title = data.get("title");
         const url = data.get("url");
         const listId = data.get("listId");
+        const year = data.get("year");
 
         if (!title || typeof title !== "string" || !url || typeof url !== "string" || !listId || typeof listId !== "string") {
             error(400, "Title, URL, and List ID are required");
@@ -70,6 +71,7 @@ export const actions = {
             title,
             url,
             listId,
+            year: year ? parseInt(year.toString()) : undefined,
         });
 
         // No need to redirect, SvelteKit will invalidate the data and update the page

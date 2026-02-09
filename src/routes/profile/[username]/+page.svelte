@@ -5,9 +5,7 @@
 
     const { profileUser, sessionUser } = data;
 
-    let newListTitle = 
-''
-;
+    let newListTitle = '';
 </script>
 
 <div class="container mx-auto p-4">
@@ -42,7 +40,7 @@
                 {#if list.links && list.links.length > 0}
                     <ul class="list-disc pl-5">
                         {#each list.links as link}
-                            <li><a href={link.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">{link.title} ({link.url})</a></li>
+                            <li><a href={link.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">{link.title} ({link.year ? link.year + ", " : ""}{link.url})</a></li>
                         {/each}
                     </ul>
                 {:else}
@@ -66,6 +64,14 @@
                                 placeholder="Link URL (e.g., https://example.com)"
                                 class="p-2 border border-gray-300 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
+                            />
+                            <input
+                                type="number"
+                                name="year"
+                                placeholder="Year (optional)"
+                                class="p-2 border border-gray-300 rounded-md w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                min="1900"
+                                max="2100"
                             />
                             <button
                                 type="submit"
