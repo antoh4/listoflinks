@@ -1,6 +1,6 @@
 import { db } from "$lib/server/db";
 import { list, user, link } from "$lib/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { error, redirect } from "@sveltejs/kit";
 
 export const load = async ({ params, locals }) => {
@@ -76,5 +76,24 @@ export const actions = {
 
         // No need to redirect, SvelteKit will invalidate the data and update the page
         // redirect(303, request.url);
+    },
+
+    deleteLink: async ({ request, locals }) => {
+        if (!locals.user) {
+            error(401, "Unauthorized");
+        }
+
+        const data = await request.formData();
+        const linkId = data.get("linkId");
+
+        if (!linkId || typeof linkId !== "string") {
+            error(400, "Link ID is required");
+        }
+
+        // TODO: Add validation to ensure the linkId belongs to the user and is associated with one of their lists.
+
+        await db.delete(link).where(eq(link.id, linkId));
+
+        // No need to redirect, SvelteKit will invalidate the data and update the page
     },
 };
