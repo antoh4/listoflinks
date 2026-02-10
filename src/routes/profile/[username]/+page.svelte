@@ -9,7 +9,7 @@
 </script>
 
 <div>
-    <h1>{profileUser.name}"s Profile</h1>
+    <h1>{profileUser.name}'s Profile</h1>
 
     {#if sessionUser && sessionUser.id === profileUser.id}
         <div>
