@@ -3,8 +3,37 @@
   import { enhance } from "$app/forms";
   import type { LayoutServerData } from "./$types";
   import "../style.css";
+  import { profileBackgroundColor, profileTextColor } from "$lib/stores/profileColors";
+  import { onMount, onDestroy } from "svelte";
+  import { browser } from "$app/environment";
 
   let { data, children }: { data: LayoutServerData; children: any } = $props();
+
+  onMount(() => {
+    if (browser) {
+      profileBackgroundColor.subscribe(value => {
+        if (value) {
+          document.body.style.backgroundColor = `#${value}`;
+        } else {
+          document.body.style.backgroundColor = '';
+        }
+      });
+      profileTextColor.subscribe(value => {
+        if (value) {
+          document.body.style.color = `#${value}`;
+        } else {
+          document.body.style.color = '';
+        }
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (browser) {
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+    }
+  });
 </script>
 
 <svelte:head>

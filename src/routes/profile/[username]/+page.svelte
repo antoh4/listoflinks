@@ -2,17 +2,31 @@
     import type { PageData } from "./$types";
     import ConfirmationPopup from "$lib/components/ConfirmationPopup.svelte";
     import { enhance } from '$app/forms';
+    import { profileBackgroundColor, profileTextColor } from '$lib/stores/profileColors';
+    import { onMount, onDestroy } from 'svelte';
 
     export let data: PageData;
 
     const { profileUser, sessionUser } = data;
 
     let newListTitle = '';
+    let profileBackgroundColorInput = profileUser.backgroundColor || '';
+    let profileTextColorInput = profileUser.textColor || '';
     let showDeleteConfirmation = false;
     let linkToDelete: { id: string; title: string } | null = null;
     let listToDelete: { id: string; title: string } | null = null;
     let showDeleteAccountConfirmation = false;
     let accountToDelete: { id: string; name: string } | null = null;
+
+    onMount(() => {
+        profileBackgroundColor.set(profileUser.backgroundColor || null);
+        profileTextColor.set(profileUser.textColor || null);
+    });
+
+    onDestroy(() => {
+        profileBackgroundColor.set(null);
+        profileTextColor.set(null);
+    });
 
     function confirmDeleteLink() {
         if (linkToDelete) {
@@ -109,6 +123,28 @@
             </form>
         </div>
         <div>
+            <h2>Profile Customization</h2>
+            <form method="POST" action="?/updateProfileColors" use:enhance>
+                <label for="backgroundColor">Background Color (Hex):</label>
+                <input
+                    type="text"
+                    id="backgroundColor"
+                    name="backgroundColor"
+                    placeholder="e.g., FFFFFF"
+                    bind:value={profileBackgroundColorInput}
+                />
+                <label for="textColor">Text Color (Hex):</label>
+                <input
+                    type="text"
+                    id="textColor"
+                    name="textColor"
+                    placeholder="e.g., 000000"
+                    bind:value={profileTextColorInput}
+                />
+                <button type="submit">Update Colors</button>
+            </form>
+        </div>
+        <div>
             <h2>Account Actions</h2>
             <button on:click={() => { showDeleteAccountConfirmation = true; accountToDelete = { id: sessionUser.id, name: sessionUser.name }; }}>Delete Account</button>
         </div>
@@ -131,7 +167,7 @@
                                 {#if sessionUser && sessionUser.id === profileUser.id}
                                     <button on:click={() => { showDeleteConfirmation = true; linkToDelete = { id: link.id, title: link.title }; }}>Delete Link</button>
                                   {/if}
-                              </li>
+                               </li>
                         {/each}
                     </ul>
                 {:else}

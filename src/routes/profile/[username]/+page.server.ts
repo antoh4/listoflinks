@@ -2,8 +2,11 @@ import { db } from "$lib/server/db";
 import { list, user, link } from "$lib/server/db/schema";
 import { eq, and } from "drizzle-orm";
 import { error, redirect } from "@sveltejs/kit";
+import type { ServerLoadEvent, Actions } from '@sveltejs/kit';
 
-export const load = async ({ params, locals }) => {
+const isValidHexColor = (color: string) => /^[0-9A-Fa-f]{6}$/i.test(color);
+
+export const load = async ({ params, locals }: PageServerLoadEvent) => {
     const { username } = params;
 
     const foundUser = await db.query.user.findFirst({
@@ -27,7 +30,7 @@ export const load = async ({ params, locals }) => {
     };
 };
 
-export const actions = {
+export const actions: Actions = {
     createList: async ({ request, locals }) => {
         if (!locals.user) {
             error(401, "Unauthorized");
@@ -138,5 +141,32 @@ export const actions = {
         });
 
         redirect(303, "/");
+    },
+    updateProfileColors: async ({ request, locals }) => {
+        if (!locals.user) {
+            error(401, "Unauthorized");
+        }
+
+        const data = await request.formData();
+        const backgroundColor = data.get("backgroundColor");
+        const textColor = data.get("textColor");
+
+        let formattedBackgroundColor = typeof backgroundColor === "string" ? backgroundColor.replace(/^#/, "") : backgroundColor;
+        let formattedTextColor = typeof textColor === "string" ? textColor.replace(/^#/, "") : textColor;
+
+        if (formattedBackgroundColor && (typeof formattedBackgroundColor !== "string" || !isValidHexColor(formattedBackgroundColor))) {
+            error(400, "Invalid background color. Must be a 6-digit hex code.");
+        }
+
+        if (formattedTextColor && (typeof formattedTextColor !== "string" || !isValidHexColor(formattedTextColor))) {
+            error(400, "Invalid text color. Must be a 6-digit hex code.");
+        }
+
+        await db.update(user)
+            .set({
+                backgroundColor: formattedBackgroundColor ? formattedBackgroundColor.toString() : null,
+                textColor: formattedTextColor ? formattedTextColor.toString() : null,
+            })
+            .where(eq(user.id, locals.user.id));
     },
 };
