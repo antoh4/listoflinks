@@ -1,0 +1,2 @@
+name = "listoflinks"
+compatibility_flags = ["nodejs_compat"]
