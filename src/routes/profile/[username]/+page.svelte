@@ -10,8 +10,11 @@
     let newListTitle = '';
     let showDeleteConfirmation = false;
     let linkToDelete: { id: string; title: string } | null = null;
+    let listToDelete: { id: string; title: string } | null = null;
+    let showDeleteAccountConfirmation = false;
+    let accountToDelete: { id: string; name: string } | null = null;
 
-    function confirmDelete() {
+    function confirmDeleteLink() {
         if (linkToDelete) {
             const form = document.createElement('form');
             form.method = 'POST';
@@ -29,8 +32,52 @@
         }
     }
 
-    function cancelDelete() {
+    function cancelDeleteLink() {
         linkToDelete = null;
+    }
+
+    function confirmDeleteList() {
+        if (listToDelete) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `?/deleteList`;
+            
+            const listIdInput = document.createElement('input');
+            listIdInput.type = 'hidden';
+            listIdInput.name = 'listId';
+            listIdInput.value = listToDelete.id;
+            form.appendChild(listIdInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    }
+
+    function cancelDeleteList() {
+        listToDelete = null;
+    }
+
+    function confirmDeleteAccount() {
+        if (accountToDelete) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `?/deleteAccount`;
+            
+            const userIdInput = document.createElement('input');
+            userIdInput.type = 'hidden';
+            userIdInput.name = 'userId';
+            userIdInput.value = accountToDelete.id;
+            form.appendChild(userIdInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    }
+
+    function cancelDeleteAccount() {
+        accountToDelete = null;
     }
 </script>
 
@@ -56,6 +103,10 @@
                 </button>
             </form>
         </div>
+        <div>
+            <h2>Account Actions</h2>
+            <button on:click={() => { showDeleteAccountConfirmation = true; accountToDelete = { id: sessionUser.id, name: sessionUser.name }; }}>Delete Account</button>
+        </div>
     {/if}
 
     <h2>Lists</h2>
@@ -63,15 +114,18 @@
         {#each profileUser.lists as list}
             <div>
                 <h3>{list.title}</h3>
+                {#if sessionUser && sessionUser.id === profileUser.id}
+                    <button on:click={() => { showDeleteConfirmation = true; listToDelete = { id: list.id, title: list.title }; }}>Delete List</button>
+                {/if}
                 {#if list.links && list.links.length > 0}
                     <ul>
                         {#each list.links as link}
                             <li>
                                 <a href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a> ({link.year ? link.year : ""})
                                 {#if sessionUser && sessionUser.id === profileUser.id}
-                                    <button on:click={() => { showDeleteConfirmation = true; linkToDelete = { id: link.id, title: link.title }; }}>Delete</button>
-                                {/if}
-                            </li>
+                                    <button on:click={() => { showDeleteConfirmation = true; linkToDelete = { id: link.id, title: link.title }; }}>Delete Link</button>
+                                  {/if}
+                              </li>
                         {/each}
                     </ul>
                 {:else}
@@ -121,8 +175,22 @@
 </div>
 
 <ConfirmationPopup
-    show={showDeleteConfirmation}
+    show={showDeleteConfirmation && !!linkToDelete}
     message={`Are you sure you want to delete the link "${linkToDelete?.title}"?`}
-    on:confirm={confirmDelete}
-    on:cancel={cancelDelete}
+    on:confirm={confirmDeleteLink}
+    on:cancel={cancelDeleteLink}
+/>
+
+<ConfirmationPopup
+    show={showDeleteConfirmation && !!listToDelete}
+    message={`Are you sure you want to delete the list "${listToDelete?.title}"?`}
+    on:confirm={confirmDeleteList}
+    on:cancel={cancelDeleteList}
+/>
+
+<ConfirmationPopup
+    show={showDeleteAccountConfirmation && !!accountToDelete}
+    message={`Are you sure you want to delete your account \"${accountToDelete?.name}\" and all associated data? This action cannot be undone.`}
+    on:confirm={confirmDeleteAccount}
+    on:cancel={cancelDeleteAccount}
 />

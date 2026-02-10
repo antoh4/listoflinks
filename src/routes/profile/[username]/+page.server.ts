@@ -96,4 +96,47 @@ export const actions = {
 
         // No need to redirect, SvelteKit will invalidate the data and update the page
     },
+
+    deleteList: async ({ request, locals }) => {
+        if (!locals.user) {
+            error(401, "Unauthorized");
+        }
+
+        const data = await request.formData();
+        const listId = data.get("listId");
+
+        if (!listId || typeof listId !== "string") {
+            error(400, "List ID is required");
+        }
+
+        // TODO: Add validation to ensure the listId belongs to the user.
+        // It should also delete all associated links.
+
+        await db.delete(list).where(eq(list.id, listId));
+
+        // No need to redirect, SvelteKit will invalidate the data and update the page
+    },
+
+    deleteAccount: async ({ request, locals, cookies }) => {
+        if (!locals.user) {
+            error(401, "Unauthorized");
+        }
+
+        const data = await request.formData();
+        const userId = data.get("userId");
+
+        if (!userId || typeof userId !== "string" || userId !== locals.user.id) {
+            error(400, "Invalid user ID");
+        }
+
+        await db.delete(user).where(eq(user.id, userId));
+
+        // Sign out the user after deleting their account
+        cookies.set("session", "", {
+            path: "/",
+            expires: new Date(0),
+        });
+
+        redirect(303, "/");
+    },
 };
