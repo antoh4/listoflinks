@@ -81,8 +81,13 @@
     }
 </script>
 
+
+<svelte:head>
+  <title>{profileUser.name}'s lists | Listoflinks</title>
+</svelte:head>
+
 <div>
-    <h1>{profileUser.name}'s Profile</h1>
+    <h1>{profileUser.name}'s lists</h1>
 
     {#if sessionUser && sessionUser.id === profileUser.id}
         <div>
@@ -107,9 +112,10 @@
             <h2>Account Actions</h2>
             <button on:click={() => { showDeleteAccountConfirmation = true; accountToDelete = { id: sessionUser.id, name: sessionUser.name }; }}>Delete Account</button>
         </div>
+        
+        <h2>Lists</h2>
     {/if}
 
-    <h2>Lists</h2>
     {#if profileUser.lists && profileUser.lists.length > 0}
         {#each profileUser.lists as list}
             <div>
