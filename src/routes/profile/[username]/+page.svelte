@@ -40,7 +40,7 @@
                 {#if list.links && list.links.length > 0}
                     <ul>
                         {#each list.links as link}
-                            <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title} ({link.year ? link.year + ", " : ""}{link.url})</a></li>
+                            <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a> ({link.year ? link.year : ""})</li>
                         {/each}
                     </ul>
                 {:else}
